@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Projects</h1>
+    {% if projects %}
+        <table class="uk-table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Operations</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for project in projects %}
+                <tr>
+                    <td><a href="/project/{{ project.id }}">{{ project.name }}</a></td>
+                    <td>
+                        <form action="/project/{{ project.id }}/delete" method="post">
+                            <button>Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>There aren't any projects yet</p>
+    {% endif %}
+
+    <h2>New project</h2>
+    <form action="/project/add" method="post">
+        <div>
+            <label for="name">Name</label>
+            <input type="text" name="name" id="name">
+        </div>
+        <button type="submit">Add</button>
+    </form>
+{% endblock %}

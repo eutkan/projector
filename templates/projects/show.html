@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>{{ project.name }}</h1>
+
+    <h2>Tasks</h2>
+    {% if tasks %}
+        <table class="uk-table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Operations</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for task in tasks %}
+                <tr>
+                    <td><a href="/task/{{ task.id }}">{{ task.name }}</a></td>
+                    <td>{{ task.start_date }}</td>
+                    <td>{{ task.end_date }}</td>
+                    <td>
+                        <form action="/task/{{ task.id }}/delete" method="post">
+                            <input type="hidden" name="project_id" value="{{ project.id }}">
+                            <button>Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        There aren't any tasks yet.
+    {% endif %}
+
+    <h2>Add Task</h2>
+    <form action="/project/{{ project.id }}/task/add" method="post">
+        <div>
+            <label for="name">Task Name</label>
+            <input type="text" name="name" id="name" autofocus>
+        </div>
+        <div>
+            <label for="start_date">Start Date</label>
+            <input type="date" name="start_date" id="start_date">
+        </div>
+        <div>
+            <label for="est_duration">Estimated Duration (days)</label>
+            <input type="number" name="est_duration" id="est_duration" min="0" max="7" value="1">
+        </div>
+        <button>Save</button>
+    </form>
+{% endblock %}

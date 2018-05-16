@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Managers</h1>
+    {% if managers %}
+        <table class="uk-table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Operations</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for manager in managers %}
+                <tr>
+                    <td><a href="/manager/{{ manager.id }}">{{ manager.name }}</a></td>
+                    <td>
+                        <form action="/manager/{{ manager.id }}/delete" method="post">
+                            <button>Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>There aren't any managers yet</p>
+    {% endif %}
+
+    <h2>New manager</h2>
+    <form action="/manager/add" method="post">
+        <div>
+            <label for="name">Name</label>
+            <input type="text" name="name" id="name">
+        </div>
+        <div>
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password">
+        </div>
+        <button type="submit">Add</button>
+    </form>
+{% endblock %}

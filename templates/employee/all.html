@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Employees</h1>
+
+    {% if employees %}
+        <table class="uk-table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Operation</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for employee in employees %}
+                <tr>
+                    <td>{{ employee.name }}</td>
+                    <td>
+                        <form action="employee/{{ employee.id }}/delete" method="post">
+                            <button>Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    {% else %}
+        <p>There aren't any employees yet.</p>
+    {% endif %}
+
+    <h2>Add Employee</h2>
+    <form action="/employee/add" method="post">
+        <div>
+            <label for="name">Employee Name</label>
+            <input type="text" name="name" id="name" autofocus>
+        </div>
+        <button>Save</button>
+    </form>
+{% endblock %}

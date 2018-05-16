@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+    Showing Task:
+    <h1>{{ task.name }}</h1>
+
+    {% if not task.is_finished %}
+        <h2>Assign to Employee</h2>
+        <form action="/task/{{ task.id }}/assign" method="post">
+            {% if free_employees %}
+                <table>
+                    {% for employee in free_employees %}
+                        <tr>
+                            <td><input id="employee_{{ employee.id }}" type="checkbox" name="employee_ids"
+                                       value="{{ employee.id }}"></td>
+                            <td><label for="employee_{{ employee.id }}">{{ employee.name }}</label></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p>All employees are busy</p>
+            {% endif %}
+            <button>Assign</button>
+        </form>
+    {% else %}
+        This task is over
+    {% endif %}
+{% endblock %}
