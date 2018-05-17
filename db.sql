@@ -8,12 +8,12 @@ DROP TABLE IF EXISTS task;
 CREATE TABLE project
 (
     id   INTEGER AUTO_INCREMENT PRIMARY KEY,
-    NAME VARCHAR(100) NOT NULL
+    name VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE manager (
     id            INTEGER AUTO_INCREMENT PRIMARY KEY,
-    NAME          VARCHAR(100) NOT NULL,
+    name          VARCHAR(100) NOT NULL,
     password_hash CHAR(255)    NOT NULL
 );
 
@@ -26,7 +26,7 @@ CREATE TABLE managerproject (
 CREATE TABLE employee
 (
     id   INTEGER AUTO_INCREMENT PRIMARY KEY,
-    NAME VARCHAR(100) NOT NULL
+    name VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE employeetask
@@ -40,7 +40,7 @@ CREATE TABLE task
 (
     id         INTEGER AUTO_INCREMENT PRIMARY KEY,
     project_id INTEGER                            NOT NULL,
-    NAME       VARCHAR(100)                       NOT NULL,
+    name       VARCHAR(100)                       NOT NULL,
     start_date DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     end_date   DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
