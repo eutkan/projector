@@ -23,7 +23,7 @@
                     {% for employee in free_employees %}
                         <tr>
                             <td><input id="employee_{{ employee.id }}" type="checkbox" name="employee_ids"
-                                       value="{{ employee.id }}"></td>
+                                       value="{{ employee.id }}" required></td>
                             <td><label for="employee_{{ employee.id }}">{{ employee.name }}</label></td>
                         </tr>
                     {% endfor %}
