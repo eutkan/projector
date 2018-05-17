@@ -1,12 +1,19 @@
+DROP TABLE IF EXISTS project;
+DROP TABLE IF EXISTS manager;
+DROP TABLE IF EXISTS managerproject;
+DROP TABLE IF EXISTS employee;
+DROP TABLE IF EXISTS employeetask;
+DROP TABLE IF EXISTS task;
+
 CREATE TABLE project
 (
     id   INTEGER AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL
+    NAME VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE manager (
     id            INTEGER AUTO_INCREMENT PRIMARY KEY,
-    name          VARCHAR(100) NOT NULL,
+    NAME          VARCHAR(100) NOT NULL,
     password_hash CHAR(255)    NOT NULL
 );
 
@@ -19,7 +26,7 @@ CREATE TABLE managerproject (
 CREATE TABLE employee
 (
     id   INTEGER AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL
+    NAME VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE employeetask
@@ -33,7 +40,7 @@ CREATE TABLE task
 (
     id         INTEGER AUTO_INCREMENT PRIMARY KEY,
     project_id INTEGER                            NOT NULL,
-    name       VARCHAR(100)                       NOT NULL,
+    NAME       VARCHAR(100)                       NOT NULL,
     start_date DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     end_date   DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
@@ -55,7 +62,7 @@ CREATE VIEW busyemployees
     AS
         SELECT
             e.*,
-            exists(
+            EXISTS(
                 SELECT *
                 FROM employeetask et, task t
                 WHERE et.employee_id = e.id
@@ -70,7 +77,7 @@ DROP VIEW IF EXISTS ManagerView;
 CREATE VIEW ManagerView AS
     SELECT
         m.*,
-        count(mp.project_id) AS assigned_projects
+        COUNT(mp.project_id) AS assigned_projects
     FROM manager m
         LEFT JOIN managerproject mp ON mp.manager_id = m.id
     GROUP BY m.id;
