@@ -4,6 +4,17 @@
     Showing Task:
     <h1>{{ task.name }}</h1>
 
+    <h2>Assignees</h2>
+    {% if assigned_employees %}
+        <ul>
+            {% for employee in assigned_employees %}
+                <li>{{ employee.name }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>There aren't any assignees for this task</p>
+    {% endif %}
+
     {% if not task.is_finished %}
         <h2>Assign to Employee</h2>
         <form action="/task/{{ task.id }}/assign" method="post">

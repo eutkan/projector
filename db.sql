@@ -39,19 +39,18 @@ CREATE TABLE task
 );
 
 
-DROP VIEW projectview;
+DROP VIEW IF EXISTS projectview;
 CREATE VIEW projectview AS
     SELECT
         p.*,
         min(t.start_date) AS start_date,
         max(t.end_date)   AS end_date
-    FROM projector.project p
-        JOIN projector.task t
-    WHERE (t.project_id = p.id)
+    FROM project p
+        LEFT JOIN task t ON p.id = t.project_id
     GROUP BY p.id;
 
 
-DROP VIEW busyemployees;
+DROP VIEW IF EXISTS busyemployees;
 CREATE VIEW busyemployees
     AS
         SELECT
@@ -65,3 +64,105 @@ CREATE VIEW busyemployees
                       AND t.end_date > now()
             ) AS busy_today
         FROM employee e;
+
+
+DROP VIEW IF EXISTS ManagerView;
+CREATE VIEW ManagerView AS
+    SELECT
+        m.*,
+        count(mp.project_id) AS assigned_projects
+    FROM manager m
+        LEFT JOIN managerproject mp ON mp.manager_id = m.id
+    GROUP BY m.id;
+
+DROP TRIGGER IF EXISTS assign_new_project_to_free_manager;
+CREATE TRIGGER assign_new_project_to_free_manager
+    AFTER INSERT
+    ON project
+    FOR EACH ROW
+    BEGIN
+        INSERT INTO managerproject (manager_id, project_id)
+            SELECT
+                mv.id,
+                new.ID
+            FROM ManagerView mv
+            ORDER BY assigned_projects ASC
+            LIMIT 1;
+    END;
+
+DROP TRIGGER IF EXISTS delete_task_assignments_on_employee_delete;
+CREATE TRIGGER delete_task_assignments_on_employee_delete
+    AFTER DELETE
+    ON employee
+    FOR EACH ROW
+    BEGIN
+        DELETE FROM employeetask
+        WHERE employee_id = OLD.id;
+    END;
+
+DROP TRIGGER IF EXISTS delete_employee_assignments_on_task_delete;
+CREATE TRIGGER delete_employee_assignments_on_task_delete
+    AFTER DELETE
+    ON task
+    FOR EACH ROW
+    BEGIN
+        DELETE FROM employeetask
+        WHERE task_id = OLD.id;
+    END;
+
+
+DROP TRIGGER IF EXISTS delete_project_assignments_on_manager_delete;
+CREATE TRIGGER delete_project_assignments_on_manager_delete
+    AFTER DELETE
+    ON manager
+    FOR EACH ROW
+    BEGIN
+        DELETE FROM managerproject
+        WHERE manager_id = OLD.id;
+    END;
+
+
+DROP TRIGGER IF EXISTS delete_manager_assignments_on_project_delete;
+CREATE TRIGGER delete_manager_assignments_on_project_delete
+    AFTER DELETE
+    ON project
+    FOR EACH ROW
+    BEGIN
+        DELETE FROM managerproject
+        WHERE project_id = OLD.id;
+    END;
+
+
+DROP PROCEDURE IF EXISTS completed_projects;
+CREATE PROCEDURE completed_projects(manager_id VARCHAR(10))
+    BEGIN
+        IF manager_id = 'ALL'
+        THEN
+            SELECT *
+            FROM projectview
+            WHERE end_date < now();
+        ELSE
+            SELECT *
+            FROM managerproject mp
+                LEFT JOIN projectview pv ON mp.project_id = pv.id
+            WHERE pv.end_date < now()
+                  AND mp.manager_id = manager_id;
+        END IF;
+    END;
+
+DROP PROCEDURE IF EXISTS incomplete_projects;
+CREATE PROCEDURE incomplete_projects(manager_id VARCHAR(10))
+    BEGIN
+        IF manager_id = 'ALL'
+        THEN
+            SELECT *
+            FROM projectview
+            WHERE end_date > now() OR end_date IS NULL;
+        ELSE
+            SELECT *
+            FROM managerproject mp
+                LEFT JOIN projectview pv ON mp.project_id = pv.id
+            WHERE (pv.end_date > now() OR pv.end_date IS NULL)
+                  AND mp.manager_id = manager_id;
+        END IF;
+    END;

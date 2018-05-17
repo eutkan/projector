@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>{{ manager.name }}</h1>
+
+    <h2>Assigned Projects</h2>
+    <nav>
+        View only
+        <a href="/projects/completed/{{ manager.id }}">completed</a>
+        or
+        <a href="/projects/incomplete/{{ manager.id }}">incomplete</a>
+        projects
+    </nav>
+
+    {% if assigned_projects %}
+        <table class="uk-table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for project in assigned_projects %}
+                <tr>
+                    <td><a href="/project/{{ project.id }}">{{ project.name }}</a></td>
+                    <td>{{ project.start_date }}</td>
+                    <td>{{ project.end_date }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        There aren't any projects assigned to <b>{{ manager.name }}</b> yet.
+    {% endif %}
+{% endblock %}

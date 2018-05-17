@@ -50,4 +50,40 @@
         </div>
         <button>Save</button>
     </form>
+
+    {% if is_admin() %}
+        <h2>Assignees</h2>
+        {% if assignees %}
+            <table class="uk-table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for manager in assignees %}
+                    <tr>
+                        <td><a href="/manager/{{ manager.id }}">{{ manager.name }}</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            There aren't any assignees yet.
+        {% endif %}
+
+        <h2>Assign To Project Manager</h2>
+        <form action="/project/{{ project.id }}/assign" method="post">
+            <ul>
+                {% for manager in managers %}
+                    <li>
+                        <input type="checkbox" id="manager_{{ manager.id }}" name="manager_ids"
+                               value="{{ manager.id }}">
+                        <label for="manager_{{ manager.id }}">{{ manager.name }}</label>
+                    </li>
+                {% endfor %}
+            </ul>
+            <button>Assign</button>
+        </form>
+    {% endif %}
 {% endblock %}

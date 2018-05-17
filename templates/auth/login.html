@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Log in</h1>
+    <form action="/login" method="post">
+        <div>
+            <label for="name">Name</label>
+            <input type="text" name="name" id="name" autofocus>
+        </div>
+        <div>
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password">
+            <button type="button" id="fillPasswordButton">Fill</button>
+        </div>
+        <button>Log in</button>
+    </form>
+    <script>
+        (function () {
+            button = document.querySelector('#fillPasswordButton');
+            password = document.querySelector('[name=password]');
+            if (!button) return;
+
+            button.onclick = () => {
+                password.value = 'password';
+            }
+        })()
+    </script>
+{% endblock %}

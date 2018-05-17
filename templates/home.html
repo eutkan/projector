@@ -4,9 +4,17 @@
     <h1>Projector</h1>
     <nav>
         <ul>
-            <li><a href="/managers">Project Managers</a></li>
-            <li><a href="/projects">Projects</a></li>
-            <li><a href="/employees">Employees</a></li>
+            {% if is_admin() %}
+                <li><a href="/managers">Project Managers</a></li>
+                <li><a href="/employees">Employees</a></li>
+                <li><a href="/projects">Projects</a></li>
+            {% else %}
+                {% with manager = get_user() %}
+                {% if manager %}
+                    <li><a href="/manager/{{ manager.id }}">Profile</a></li>
+                {% endif %}
+                {% endwith %}
+            {% endif %}
         </ul>
     </nav>
 {% endblock %}

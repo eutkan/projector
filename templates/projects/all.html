@@ -2,6 +2,17 @@
 
 {% block content %}
     <h1>Projects</h1>
+
+    {% if is_admin() %}
+        <nav>
+            View only
+            <a href="/projects/completed">completed</a>
+            or
+            <a href="/projects/incomplete">incomplete</a>
+            projects
+        </nav>
+    {% endif %}
+
     {% if projects %}
         <table class="uk-table">
             <thead>
@@ -27,12 +38,14 @@
         <p>There aren't any projects yet</p>
     {% endif %}
 
-    <h2>New project</h2>
-    <form action="/project/add" method="post">
-        <div>
-            <label for="name">Name</label>
-            <input type="text" name="name" id="name">
-        </div>
-        <button type="submit">Add</button>
-    </form>
+    {% if is_admin() %}
+        <h2>New project</h2>
+        <form action="/project/add" method="post">
+            <div>
+                <label for="name">Name</label>
+                <input type="text" name="name" id="name">
+            </div>
+            <button type="submit">Add</button>
+        </form>
+    {% endif %}
 {% endblock %}

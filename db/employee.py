@@ -10,7 +10,7 @@ def get_all():
 
 def get_all_available():
     with connection.cursor() as cursor:
-        sql = "SELECT * FROM busyemployees WHERE busy_today = false"
+        sql = "SELECT * FROM busyemployees WHERE busy_today = FALSE"
         cursor.execute(sql)
         return cursor.fetchall()
 
@@ -27,3 +27,16 @@ def delete(id):
         sql = "DELETE FROM employee WHERE id = %s"
         cursor.execute(sql, (id,))
         connection.commit()
+
+
+def get_assigned_for_task(task_id):
+    with connection.cursor() as cursor:
+        sql = """
+            SELECT e.* FROM employeetask et 
+                LEFT JOIN employee e ON et.employee_id = e.id 
+            WHERE et.task_id = %(task_id)s
+        """
+        cursor.execute(sql, {
+            'task_id': task_id
+        })
+        return cursor.fetchall()
