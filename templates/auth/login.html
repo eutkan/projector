@@ -14,15 +14,4 @@
         </div>
         <button>Log in</button>
     </form>
-    <script>
-        (function () {
-            button = document.querySelector('#fillPasswordButton');
-            password = document.querySelector('[name=password]');
-            if (!button) return;
-
-            button.onclick = () => {
-                password.value = 'password';
-            }
-        })()
-    </script>
 {% endblock %}
